@@ -1,0 +1,27 @@
+
+sudo: required
+language: java
+
+jdk:
+  - openjdk8
+
+script:
+  - ./gradlew build -x test
+
+before_deploy:
+    - mkdir MiningBuild
+    - find . -name '*.jar' -exec cp {} ./MiningBuild \;
+    - cd /home/travis/build/rafaresearch/voldemort/MiningBuild
+    - tar -zcvf result.tar.gz *
+deploy:
+  provider: releases
+  api_key:
+    secure: $GITHUB_TOKEN
+  file: result.tar.gz
+  name: fetchjar-b30fdfebe30c9b6e37b9fbc3fec0ff74cd19f997
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    all_branches: true 
+            
